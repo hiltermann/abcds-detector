@@ -73,7 +73,7 @@ def execute_abcd_assessment_for_videos(config: Configuration):
   }
 
   video_uris = expand_uris(config.video_uris)
-
+  df_output_sheet = pandas.DataFrame()
   for video_uri in video_uris:
     print(f"\n\nProcessing ABCD Assessment for video {video_uri}... \n")
 
@@ -134,7 +134,7 @@ def execute_abcd_assessment_for_videos(config: Configuration):
       df = pandas.DataFrame(video_assessment)
       df.insert(0, 'URI', video_uri)
       df.insert(0, 'DATETIME', datetime.datetime.now())
-      df_output = pandas.concat([df,df_output])
+      df_output_sheet = pandas.concat([df,df_output_sheet])
 
     # Remove local version of video files
     remove_local_video_files()
@@ -142,8 +142,8 @@ def execute_abcd_assessment_for_videos(config: Configuration):
   if config.spreadsheet_url:
     sheet = sheets.InteractiveSheet(url=config.spreadsheet_url)
     df_sheet = sheet.as_df()
-    df_output = pandas.concat([df_sheet,df_output])
-    sheet.update(df_output)
+    df_output_sheet = pandas.concat([df_sheet,df_output_sheet])
+    sheet.update(df_output_sheet)
 
   if config.assessment_file:
     with open(config.assessment_file, "w", encoding="utf-8") as f:
