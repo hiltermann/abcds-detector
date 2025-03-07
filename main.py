@@ -26,6 +26,7 @@ from annotations_evaluation.annotations_generation import generate_video_annotat
 from annotations_evaluation.evaluation import evaluate_abcd_features_using_annotations
 from llms_evaluation.evaluation import evaluate_abcd_features_using_llms
 from feature_configs.features import get_feature_configs
+import pandas
 from prompts.prompts_generator import PromptParams
 from helpers.generic_helpers import (
     expand_uris,
