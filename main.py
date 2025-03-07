@@ -127,9 +127,21 @@ def execute_abcd_assessment_for_videos(config: Configuration):
     if config.bq_table_name:
       bq_service = BigQueryService(config.project_id)
       store_in_bq(config, bq_service, video_assessment, prompt_params, llm_params)
+        
+    if config.spreadsheet_url:
+      df = pandas.DataFrame(video_assessment)
+      df.insert(0, 'URI', video_uri)
+      df.insert(0, 'DATETIME', datetime.datetime.now())
+      df_output = pandas.concat([df,df_output])
 
     # Remove local version of video files
     remove_local_video_files()
+
+  if config.spreadsheet_url:
+    sheet = sheets.InteractiveSheet(url=config.spreadsheet_url)
+    df_sheet = sheet.as_df()
+    df_output = pandas.concat([df_sheet,df_output])
+    sheet.update(df_output)
 
   if config.assessment_file:
     with open(config.assessment_file, "w", encoding="utf-8") as f:
