@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+f#!/usr/bin/env python3
 
 ###########################################################################
 #
@@ -47,6 +47,7 @@ class Configuration:
         self.bq_dataset_name = "abcd_detector_ds"
         self.bq_table_name = "abcd_assessments"
         self.assessment_file = ""
+        self.spreadsheet_url = ""
         self.use_annotations = True
         self.use_llms = True
         self.verbose = True
@@ -87,6 +88,7 @@ class Configuration:
         bigquery_dataset:str,
         bigquery_table:str,
         assessment_file: str,
+        spreadsheet_url: str,
         use_annotations: bool,
         use_llms: bool,
         verbose: bool
@@ -114,6 +116,7 @@ class Configuration:
         self.bq_dataset_name = bigquery_dataset
         self.bq_table_name = bigquery_table
         self.assessment_file = assessment_file
+        self.spreadsheet_url = spreadsheet_url
         self.use_annotations = use_annotations
         self.use_llms = use_llms
         self.verbose = verbose
