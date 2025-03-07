@@ -94,6 +94,7 @@ Please esure you have access to all of the following before starting:
     * [Knowledge Graph API](https://console.cloud.google.com/marketplace/product/google/kgsearch.googleapis.com) - Optional if you are only using LLMs.
     * [Cloud Storage API](https://console.cloud.google.com/marketplace/product/google/storage.googleapis.com)
     * [BigQuery](https://cloud.google.com/bigquery/docs/reference/rest) - Optional if you don't want to store the results in BQ.
+    * [Sheets API](https://cloud.google.com/workflows/docs/reference/googleapis/sheets/Overview) - Optional if you want to store the results in a Google Spreadsheet.
 * [API Key](https://cloud.google.com/docs/authentication/api-keys) provisioned. - Optional if you are only using LLMs.
 * [Project Billing](https://cloud.google.google.com/billing/) enabled.
 * Python libraries:
