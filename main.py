@@ -134,16 +134,14 @@ def execute_abcd_assessment_for_videos(config: Configuration):
     if config.spreadsheet_url:
       if config.use_annotations:      
         df = pandas.DataFrame(video_assessment["annotations_evaluation"]["evaluated_features"])
-        df.insert(0, 'URI', video_uri)
         df.insert(0, 'Type', "Annotations")
-        df.insert(0, 'DATETIME', datetime.datetime.now())
-        df_output_sheet = pandas.concat([df,df_output_sheet])
       if config.use_llms:      
         df = pandas.DataFrame(video_assessment["llms_evaluation"]["evaluated_features"])
-        df.insert(0, 'URI', video_uri)
         df.insert(0, 'Type', "Llms")
-        df.insert(0, 'DATETIME', datetime.datetime.now())
-        df_output_sheet = pandas.concat([df,df_output_sheet])
+
+      df.insert(0, 'VideoUrl', video_uri)
+      df.insert(0, 'AnalysisDate', datetime.datetime.now())
+      df_output_sheet = pandas.concat([df,df_output_sheet])
 
     # Remove local version of video files
     remove_local_video_files()
