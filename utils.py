@@ -43,6 +43,7 @@ def build_abcd_params_config(args: any) -> Configuration:
     bigquery_dataset=args.bigquery_dataset,
     bigquery_table=args.bigquery_table,
     assessment_file=args.assessment_file,
+    spreadsheet_url=args.spreadsheet_url,
     use_annotations=args.use_annotations,
     use_llms=args.use_llms,
     verbose=args.verbose,
@@ -133,6 +134,12 @@ def parse_args(arg_list: list[str] | None = None) -> None:
     "-assessment_file",
     "-af",
     help="Local file path to write results to",
+    default=None,
+  )
+  parser.add_argument(
+    "-spreadsheet_url",
+    "-su",
+    help="Google Spreadsheet URL to write results to",
     default=None,
   )
   parser.add_argument(
