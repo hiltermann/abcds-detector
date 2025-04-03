@@ -123,8 +123,8 @@ class Configuration:
         self.bq_dataset_name = bigquery_dataset
         self.bq_table_name = bigquery_table
         self.assessment_file = assessment_file
-        self.spreadsheet_id = input_sheet
-        self.input_sheet = spreadsheet_id
+        self.spreadsheet_id = spreadsheet_id
+        self.input_sheet = input_sheet
         self.output_sheet = output_sheet
         self.use_annotations = use_annotations
         self.use_llms = use_llms
