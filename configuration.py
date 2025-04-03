@@ -47,7 +47,9 @@ class Configuration:
         self.bq_dataset_name = "abcd_detector_ds"
         self.bq_table_name = "abcd_assessments"
         self.assessment_file = ""
-        self.spreadsheet_url = ""
+        self.spreadsheet_id = ""
+        self.input_sheet = ""
+        self.output_sheet = ""
         self.use_annotations = True
         self.use_llms = True
         self.verbose = True
@@ -88,7 +90,9 @@ class Configuration:
         bigquery_dataset:str,
         bigquery_table:str,
         assessment_file: str,
-        spreadsheet_url: str,
+        spreadsheet_id: str,
+        input_sheet: str,
+        output_sheet: str,
         use_annotations: bool,
         use_llms: bool,
         verbose: bool
@@ -105,6 +109,9 @@ class Configuration:
           bigquery_dataset: name of dataset in BigQuery.
           bigquery_table: name of table to append results to in BigQuery.
           assessment_file: If present, results will be written to the file path.
+          spreadsheet_id: The id of the Google Spreadsheet.
+          input_sheet: Input sheet name.
+          output_sheet: Output sheet name.
           use_annotations: Use video annotation AI.
           use_llms: Use LLM AI.
           verbose: Turn on extra debug and execution prints.
@@ -116,7 +123,9 @@ class Configuration:
         self.bq_dataset_name = bigquery_dataset
         self.bq_table_name = bigquery_table
         self.assessment_file = assessment_file
-        self.spreadsheet_url = spreadsheet_url
+        self.spreadsheet_id = input_sheet
+        self.input_sheet = spreadsheet_id
+        self.output_sheet = output_sheet
         self.use_annotations = use_annotations
         self.use_llms = use_llms
         self.verbose = verbose
