@@ -96,7 +96,7 @@ def display_products_table(products):
     display(HTML(df.to_html(escape=False)))
 
 
-def upload_blobs_to_gcs(config: Configuration, data_list: list[dict[]], bucket_name: str, destination_folder: str):
+def upload_blobs_to_gcs(config: Configuration, data_list: list, bucket_name: str, destination_folder: str):
     """
     OPTIONAL: Uploads image blobs one-by-one from a list of dictionaries to
     Google Cloud Storage.
