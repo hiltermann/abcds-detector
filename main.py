@@ -40,11 +40,6 @@ from helpers.generic_helpers import (
 )
 from helpers.vertex_ai_service import LLMParameters
 from helpers.bq_service import BigQueryService
-from helpers.drive_service import (
-    download_spreadsheet_data,
-    display_products_table,
-    upload_blobs_to_gcs
-)
 from configuration import Configuration
 from utils import parse_args, build_abcd_params_config
 
