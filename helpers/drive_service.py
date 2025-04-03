@@ -28,6 +28,8 @@ import pandas as pd
 import requests
 import sys
 
+from configuration import Configuration
+
 def detect_format(url):
     """
     Helper function to detect image format from URL or Google Drive link.
@@ -94,12 +96,13 @@ def display_products_table(products):
     display(HTML(df.to_html(escape=False)))
 
 
-def upload_blobs_to_gcs(data_list, bucket_name, destination_folder):
+def upload_blobs_to_gcs(config: Configuration, data_list: list[dict[]], bucket_name: str, destination_folder: str):
     """
     OPTIONAL: Uploads image blobs one-by-one from a list of dictionaries to
     Google Cloud Storage.
 
     Args:
+        config: Configuration class.
         data_list: List of dictionaries, each containing an 'image_blob' field
         bucket_name: Name of the GCS bucket
         destination_folder: Folder path in the bucket (default: 'images/')
