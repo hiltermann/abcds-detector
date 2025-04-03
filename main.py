@@ -141,6 +141,7 @@ def execute_abcd_assessment_for_videos(config: Configuration):
 
       filename = video_uri.split('/')[-1]
 
+      df.insert(0, 'DriveUrl', config.gcs_drive_mapping[video_uri])
       df.insert(0, 'Filename', filename)
       df.insert(0, 'VideoUrl', video_uri)
       df.insert(0, 'AnalysisDate', datetime.datetime.now())
