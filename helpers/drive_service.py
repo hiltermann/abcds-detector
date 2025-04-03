@@ -177,7 +177,7 @@ def download_spreadsheet_data(config: Configuration):
         sheet = service.spreadsheets()
 
         # Fetch all data from the specified sheet
-        result = sheet.values().get(spreadsheetId=config.spreadsheet_id, range=config.sheet_name).execute()
+        result = sheet.values().get(spreadsheetId=config.spreadsheet_id, range=config.input_sheet).execute()
         values = result.get('values', [])
 
         print(values)
