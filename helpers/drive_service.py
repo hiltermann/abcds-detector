@@ -163,12 +163,11 @@ def upload_blobs_to_gcs(config: Configuration, data_list: list[dict[]], bucket_n
     print(f"Uploaded {len(results)} files to Google Cloud Storage")
     return results
 
-def download_spreadsheet_data(spreadsheet_id, sheet_name):
+def download_spreadsheet_data(config: Configuration):
     """Downloads data from a Google Sheet, filtering by 'promo?' column.
 
     Args:
-        spreadsheet_id: The ID of the Google Sheet.
-        sheet_name: The name of the sheet to read from.
+        config: Configuration class.
 
     Returns:
         A pandas DataFrame containing the filtered data, or None if an error occurs.
@@ -178,7 +177,7 @@ def download_spreadsheet_data(spreadsheet_id, sheet_name):
         sheet = service.spreadsheets()
 
         # Fetch all data from the specified sheet
-        result = sheet.values().get(spreadsheetId=spreadsheet_id, range=sheet_name).execute()
+        result = sheet.values().get(spreadsheetId=config.spreadsheet_id, range=config.sheet_name).execute()
         values = result.get('values', [])
 
         print(values)
