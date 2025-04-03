@@ -139,6 +139,9 @@ def execute_abcd_assessment_for_videos(config: Configuration):
         df = pandas.DataFrame(video_assessment["llms_evaluation"]["evaluated_features"])
         df.insert(0, 'Type', "Llms")
 
+      filename = video_uri.split('/')[-1]
+
+      df.insert(0, 'Filename', filename)
       df.insert(0, 'VideoUrl', video_uri)
       df.insert(0, 'AnalysisDate', datetime.datetime.now())
       df_output_sheet = pandas.concat([df,df_output_sheet])
