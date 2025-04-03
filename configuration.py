@@ -58,6 +58,9 @@ class Configuration:
         # set videos
         self.video_uris = []
 
+        # GCS to Drive mapping
+        self.gcs_drive_mapping = {}
+
         # set brand
         self.brand_name = ""
         self.brand_variations = []
@@ -147,6 +150,17 @@ class Configuration:
             self.video_uris = video_uris
         else:
             self.video_uris = [video_uris]
+
+
+    def set_gcs_drive_mapping(self, gcs_drive_mapping: dict[str,str]) -> None:
+        """Set the mapping between drive and gcs for videos that will be processed.
+
+          Having a separate method for this allows multiple runs.
+
+          Args:
+            gcs_drive_mapping: a dict of Google Cloud Storage URIs and drive urls.
+        """
+        self.gcs_drive_mapping = gcs_drive_mapping
 
 
     def set_brand_details(self,
