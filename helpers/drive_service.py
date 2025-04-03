@@ -96,7 +96,7 @@ def display_products_table(products):
     display(HTML(df.to_html(escape=False)))
 
 
-def upload_blobs_to_gcs(config: Configuration, data_list: list, bucket_name: str, destination_folder: str):
+def upload_blobs_to_gcs(config: Configuration, data_list: list, bucket_name: str, path: str):
     """
     OPTIONAL: Uploads image blobs one-by-one from a list of dictionaries to
     Google Cloud Storage.
@@ -105,7 +105,7 @@ def upload_blobs_to_gcs(config: Configuration, data_list: list, bucket_name: str
         config: Configuration class.
         data_list: List of dictionaries, each containing an 'image_blob' field
         bucket_name: Name of the GCS bucket
-        destination_folder: Folder path in the bucket (default: 'images/')
+        path: Folder path in the bucket (default: 'images/')
 
     Returns:
         A list of dictionaries with the original data and the public URL added
@@ -136,7 +136,7 @@ def upload_blobs_to_gcs(config: Configuration, data_list: list, bucket_name: str
           print(f"Creating filename: {filename}")
         else:
           filename = data_dict['filename']
-        destination_blob_name = f"{destination_folder}{filename}"
+        destination_blob_name = f"{path}{filename}"
 
         # Create a blob object
         blob = bucket.blob(destination_blob_name)
@@ -153,7 +153,7 @@ def upload_blobs_to_gcs(config: Configuration, data_list: list, bucket_name: str
         result_dict = data_dict.copy()
         result_dict['gcs_url'] = blob.public_url
         results.append(result_dict)
-        gcs_url = f"gs://{bucket_name}/{bucket_path}{filename}"
+        gcs_url = f"gs://{bucket_name}/{path}{filename}"
         gcs_urls.append(gcs_url)
         gcs_drive_mapping[gcs_url] = data_dict['video_url']
 
