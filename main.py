@@ -131,7 +131,7 @@ def execute_abcd_assessment_for_videos(config: Configuration):
       bq_service = BigQueryService(config.project_id)
       store_in_bq(config, bq_service, video_assessment, prompt_params, llm_params)
         
-    if config.spreadsheet_url:
+    if config.output_sheet and config.spreadsheet_id:
       if config.use_annotations:      
         df = pandas.DataFrame(video_assessment["annotations_evaluation"]["evaluated_features"])
         df.insert(0, 'Type', "Annotations")
@@ -149,8 +149,8 @@ def execute_abcd_assessment_for_videos(config: Configuration):
     # Remove local version of video files
     remove_local_video_files()
 
-  if config.spreadsheet_url:
-    sheet = sheets.InteractiveSheet(url=config.spreadsheet_url)
+  if config.output_sheet and config.spreadsheet_id:
+    sheet = sheets.InteractiveSheet(sheet_id=config.spreadsheet_id, worksheet_name=config.output_sheet)
     df_sheet = sheet.as_df()
     df_output_sheet = pandas.concat([df_sheet,df_output_sheet])
     sheet.update(df_output_sheet)
