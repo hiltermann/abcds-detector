@@ -78,9 +78,10 @@ def execute_abcd_assessment_for_videos(config: Configuration):
   for video_uri in video_uris:
     print(f"\n\nProcessing ABCD Assessment for video {video_uri}... \n")
 
-      # 1) Prepare video
-    trim_video(config, video_uri)
-
+    # 1) Prepare video
+    if config.use_llms:
+        trim_video(config, video_uri)
+      
     # Check size of video to avoid processing videos > 7MB
     video_metadata = get_blob(video_uri)
     size_mb = video_metadata.size / 1e6
