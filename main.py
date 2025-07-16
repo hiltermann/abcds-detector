@@ -73,57 +73,19 @@ def execute_abcd_assessment_for_videos(config: Configuration):
       "llm_params": llm_params.__dict__,
   }
 
-  video_uris = expand_uris(config.video_uris)
   df_output_sheet = pandas.DataFrame()
-  for video_uri in video_uris:
-    print(f"\n\nProcessing ABCD Assessment for video {video_uri}... \n")
-
-    # 1) Prepare video
-    if config.use_llms:
-        trim_video(config, video_uri)
-      
-    # Check size of video to avoid processing videos > 7MB
-    video_metadata = get_blob(video_uri)
-    size_mb = video_metadata.size / 1e6
-    if config.use_llms and size_mb > config.video_size_limit_mb:
-      print(
-          f"The size of video {video_uri} is greater than {config.video_size_limit_mb} MB. Skipping execution."
-      )
-      continue
-
-    # 3) Execute ABCD Assessment
-    video_assessment = {
-        "video_uri": video_uri,
-    }
+  for video_blob in config.video_blobs:
+    print(f"\n\nProcessing ABCD Assessment for video {video_blob['filename']}... \n")
 
     if config.use_annotations:
-      generate_video_annotations(config, video_uri)
-      annotations_evaluated_features = evaluate_abcd_features_using_annotations(
-          config,
-          video_uri
-      )
-      video_assessment["annotations_evaluation"] = {
-          "evaluated_features": annotations_evaluated_features,
-      }
-
-    if config.use_llms:
-      llm_evaluated_features = evaluate_abcd_features_using_llms(
-        config, video_uri, prompt_params, llm_params
-      )
-      video_assessment["llms_evaluation"] = {
-        "evaluated_features": llm_evaluated_features,
-      }
-
-      if config.verbose:
-        if len(llm_evaluated_features) < len(get_feature_configs()):
-          print(
-            f"WARNING: ABCD Detector was not able to process all the features for video {video_uri}. Please check and execute again. \n"
-          )
-        if len(llm_evaluated_features) > len(get_feature_configs()):
-          print(
-            f"WARNING: ABCD Detector processed more features than the original number features. \
-            Processed features: {len(llm_evaluated_features)} - Original features: {len(get_feature_configs())}"
-          )
+      generate_video_annotations(config, video_blob['blob'], config.local_path)
+      # annotations_evaluated_features = evaluate_abcd_features_using_annotations(
+      #     config,
+      #     video_uri
+      # )
+      # video_assessment["annotations_evaluation"] = {
+      #     "evaluated_features": annotations_evaluated_features,
+      # }
 
     print_abcd_assessment(config.brand_name, video_assessment)
     brand_assessment.get("video_assessments").append(video_assessment)
