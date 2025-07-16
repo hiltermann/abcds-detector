@@ -49,7 +49,7 @@ def load_blob(annotation_uri: str):
     """Loads a blob to json"""
     # Open and read the JSON file
     with open(annotation_uri, 'r') as file:
-        data = json.load(file).get("annotation_results")[0]
+        data = json.load(file).get("annotationResults")[0]
     return data
 
 def expand_uris(uris: list) -> any:
