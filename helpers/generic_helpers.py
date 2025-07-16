@@ -72,7 +72,7 @@ def expand_uris(uris: list) -> any:
 
 def get_annotation_uri(config: Configuration, video_uri: str) -> str:
     """Helper to translate video to annotation uri."""
-    return video_uri.replace("gs://", config.annotation_path).replace(".", "_") + "/"
+    return config.local_path + "/"
 
 
 def get_reduced_uri(config: Configuration, video_uri: str) -> str:
