@@ -69,7 +69,7 @@ def standard_annotations_detection(
 
     # Write the dictionary to a JSON file
     with open(local_path, 'w', encoding='utf-8') as f:
-        json.dump(json_string, f, indent=2) # Use indent for pretty-printing
+        f.write(json_string)
 
     print(
         f"\nFinished processing video for {str(features)} annotations...\n"
@@ -99,8 +99,8 @@ def custom_annotations_detection(
     json_string = types.AnnotateVideoResponse.to_json(response)
 
     # Write the dictionary to a JSON file
-    with open(local_path, 'w', encoding='utf-8') as f:
-        json.dump(json_string, f, indent=2) # Use indent for pretty-printing
+    with open(local_path, 'w') as f:
+        f.write(json_string)
 
     print(
         f"\nFinished processing video for {str(features)} annotations...\n"
