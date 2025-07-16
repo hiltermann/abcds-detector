@@ -43,8 +43,8 @@ class Annotations(Enum):
 
 def standard_annotations_detection(
     video_client: videointelligence.VideoIntelligenceServiceClient,
-    video_uri: str,
-    annotations_uri: str,
+    video_blob: str,
+    local_path: str
 ) -> None:
     """Detect the following standard annotations: Text, Shot, Logo and Label"""
     features = [
@@ -56,14 +56,13 @@ def standard_annotations_detection(
     operation = video_client.annotate_video(
         request={
             "features": features,
-            "input_uri": video_uri,
-            "output_uri": annotations_uri,
+            "input_content": video_blob
         }
     )
-    print(f"\nProcessing video {video_uri} for {str(features)} annotations...")
-    operation.result(timeout=800)
+    print(f"\nProcessing video for {str(features)} annotations...")
+    response = operation.result(timeout=800)
     print(
-        f"\nFinished processing video {video_uri} for {str(features)} annotations...\n"
+        f"\nFinished processing video for {str(features)} annotations...\n"
     )
 
 
@@ -71,27 +70,27 @@ def custom_annotations_detection(
     video_client: videointelligence.VideoIntelligenceServiceClient,
     context: VideoContext,
     features: list[videointelligence.Feature],
-    video_uri: str,
-    annotations_uri: str,
+    video_blob: str,
+    local_path: str
 ) -> None:
     """Detect the following custom annotations: Face, People and Speech"""
 
     operation = video_client.annotate_video(
         request={
             "features": features,
-            "input_uri": video_uri,
-            "video_context": context,
-            "output_uri": annotations_uri,
+            "input_content": video_blob,
+            "video_context": context
         }
     )
-    print(f"\nProcessing video {video_uri} for {str(features)} annotations...")
+    print(f"\nProcessing video for {str(features)} annotations...")
     operation.result(timeout=800)
     print(
-        f"\nFinished processing video {video_uri} for {str(features)} annotations...\n"
+        f"\nFinished processing video for {str(features)} annotations...\n"
     )
 
 
-def generate_video_annotations(config: Configuration, video_uri: str) -> None:
+def generate_video_annotations(config: Configuration, video_blob: str,
+                               local_path: str) -> None:
     """Generates video annotations for videos in Google Cloud Storage"""
 
     standard_video_client = videointelligence.VideoIntelligenceServiceClient()
@@ -124,7 +123,7 @@ def generate_video_annotations(config: Configuration, video_uri: str) -> None:
     # Video annotations processing
 
     tasks = []
-    annotation_uri = get_annotation_uri(config, video_uri)
+    # annotation_uri = get_annotation_uri(config, video_uri)
 
     standard_annotations_uri = (
         f"{annotation_uri}{Annotations.GENERIC_ANNOTATIONS.value}.json"
@@ -145,7 +144,7 @@ def generate_video_annotations(config: Configuration, video_uri: str) -> None:
     if not standard_annotations_blob:
         tasks.append(
             lambda: standard_annotations_detection(
-                standard_video_client, video_uri, standard_annotations_uri
+                standard_video_client, video_blob
             ),
         )
     else:
@@ -158,8 +157,7 @@ def generate_video_annotations(config: Configuration, video_uri: str) -> None:
                 standard_video_client,
                 face_context,
                 [videointelligence.Feature.FACE_DETECTION],
-                video_uri,
-                face_annotations_uri,
+                video_blob
             )
         )
     else:
