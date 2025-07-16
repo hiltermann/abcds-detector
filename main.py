@@ -79,13 +79,13 @@ def execute_abcd_assessment_for_videos(config: Configuration):
 
     if config.use_annotations:
       generate_video_annotations(config, video_blob['blob'], config.local_path)
-      # annotations_evaluated_features = evaluate_abcd_features_using_annotations(
-      #     config,
-      #     video_uri
-      # )
-      # video_assessment["annotations_evaluation"] = {
-      #     "evaluated_features": annotations_evaluated_features,
-      # }
+      annotations_evaluated_features = evaluate_abcd_features_using_annotations(
+          config,
+          video_blob
+      )
+      video_assessment["annotations_evaluation"] = {
+          "evaluated_features": annotations_evaluated_features,
+      }
 
     print_abcd_assessment(config.brand_name, video_assessment)
     brand_assessment.get("video_assessments").append(video_assessment)
@@ -102,11 +102,11 @@ def execute_abcd_assessment_for_videos(config: Configuration):
         df = pandas.DataFrame(video_assessment["llms_evaluation"]["evaluated_features"])
         df.insert(0, 'Type', "Llms")
 
-      filename = video_uri.split('/')[-1]
+      filename = video_blob["filename"]
 
-      df.insert(0, 'DriveUrl', config.gcs_drive_mapping[video_uri])
+      df.insert(0, 'DriveUrl', video_blob["videoUrl"])
       df.insert(0, 'Filename', filename)
-      df.insert(0, 'VideoUrl', video_uri)
+      df.insert(0, 'VideoUrl', "")
       df.insert(0, 'AnalysisDate', datetime.datetime.now())
       df_output_sheet = pandas.concat([df,df_output_sheet])
 
@@ -141,7 +141,7 @@ def main(arg_list: list[str] | None = None) -> None:
   start_time = time.time()
   print("Starting ABCD assessment... \n")
 
-  if config.video_uris:
+  if config.video_blobs:
     execute_abcd_assessment_for_videos(config)
     print("Finished ABCD assessment. \n")
   else:
