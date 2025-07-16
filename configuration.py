@@ -56,6 +56,7 @@ class Configuration:
         self.annotation_path = ""
 
         # set videos
+        self.video_blobs = []
         self.video_uris = []
 
         # GCS to Drive mapping
