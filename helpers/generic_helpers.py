@@ -159,14 +159,9 @@ def player(video_url: str):
 
 def print_abcd_assessment(brand_name: str, video_assessment: dict) -> None:
     """Print ABCD Assessments"""
-    bucket_name, path = (
-        video_assessment.get("video_uri").replace("gs://", "").split("/", 1)
-    )
-    video_url = f"/content/{bucket_name}/{path}"
-    # Play Video
-    player(video_url)
+ 
     print(f"***** ABCD Assessment for brand {brand_name} ***** \n")
-    print(f"Asset name: {video_assessment.get('video_uri')} \n")
+    print(f"Asset name: {video_assessment.get('video_blob').get('filename')} \n")
 
     # Get ABCD evaluations
     if video_assessment.get("annotations_evaluation"):
@@ -174,13 +169,6 @@ def print_abcd_assessment(brand_name: str, video_assessment: dict) -> None:
         print_score_details(video_assessment.get("annotations_evaluation"))
     else:
         print("No annotations_evaluation found. Skipping from priting. \n")
-
-    if video_assessment.get("llms_evaluation"):
-        print("***** ABCD Assessment using LLMs ***** \n")
-        print_score_details(video_assessment.get("llms_evaluation"))
-    else:
-        print("No llms_evaluation found. Skipping from priting. \n")
-
 
 def print_score_details(abcd_eval: dict) -> None:
     """Print score details"""
