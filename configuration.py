@@ -98,7 +98,8 @@ class Configuration:
         output_sheet: str,
         use_annotations: bool,
         use_llms: bool,
-        verbose: bool
+        verbose: bool,
+        local_path: str
     ) -> None:
         """Set the required parameters for ABCD to run.
 
@@ -118,6 +119,7 @@ class Configuration:
           use_annotations: Use video annotation AI.
           use_llms: Use LLM AI.
           verbose: Turn on extra debug and execution prints.
+          local_path: Local path in colab to store annotation files.
         """
         self.project_id = project_id
         self.project_zone = project_zone or "us-central1"
@@ -132,6 +134,7 @@ class Configuration:
         self.use_annotations = use_annotations
         self.use_llms = use_llms
         self.verbose = verbose
+        self.local_path = local_path
         self.annotation_path = f"gs://{bucket_name}/ABCD/"
 
 
