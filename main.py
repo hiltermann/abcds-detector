@@ -106,7 +106,7 @@ def execute_abcd_assessment_for_videos(config: Configuration):
 
       filename = video_blob["filename"]
 
-      df.insert(0, 'DriveUrl', video_blob["videoUrl"])
+      df.insert(0, 'DriveUrl', video_blob["video_url"])
       df.insert(0, 'Filename', filename)
       df.insert(0, 'VideoUrl', "")
       df.insert(0, 'AnalysisDate', datetime.datetime.now())
