@@ -20,6 +20,8 @@
 
 """Module to generate video annotations using the Video Intelligence API"""
 
+import json
+
 from enum import Enum
 from google.cloud import videointelligence
 from google.cloud.videointelligence import VideoContext
@@ -61,6 +63,10 @@ def standard_annotations_detection(
     )
     print(f"\nProcessing video for {str(features)} annotations...")
     response = operation.result(timeout=800)
+
+    with open(local_path + '/example.txt', 'w') as f:
+      f.write(str(response))
+
     print(
         f"\nFinished processing video for {str(features)} annotations...\n"
     )
@@ -83,7 +89,11 @@ def custom_annotations_detection(
         }
     )
     print(f"\nProcessing video for {str(features)} annotations...")
-    operation.result(timeout=800)
+    response = operation.result(timeout=800)
+
+    with open(local_path + '/example_custom.txt', 'w') as f:
+      f.write(str(response))
+
     print(
         f"\nFinished processing video for {str(features)} annotations...\n"
     )
