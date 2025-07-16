@@ -26,7 +26,7 @@ from enum import Enum
 from google.cloud import videointelligence
 from google.cloud.videointelligence import VideoContext
 from google.cloud import videointelligence_v1 as videointelligence2
-from google.protobuf.json_format import MessageToDict # Import for protobuf to dict conversion
+from google.cloud.videointelligence_v1 import types
 from configuration import Configuration
 from helpers.generic_helpers import (
     get_blob,
@@ -65,11 +65,11 @@ def standard_annotations_detection(
     response = operation.result(timeout=800)
 
     # Convert the protobuf response object to a Python dictionary
-    response_data = MessageToDict(response)
+    json_string = types.AnnotateVideoResponse.to_json(response)
 
     # Write the dictionary to a JSON file
-    with open(local_path, 'w') as f:
-        json.dump(response_data, f, indent=2) # Use indent for pretty-printing
+    with open(local_path, 'w', encoding='utf-8') as f:
+        json.dump(json_string, f, indent=2) # Use indent for pretty-printing
 
     print(
         f"\nFinished processing video for {str(features)} annotations...\n"
@@ -96,11 +96,11 @@ def custom_annotations_detection(
     response = operation.result(timeout=800)
 
     # Convert the protobuf response object to a Python dictionary
-    response_data = MessageToDict(response)
+    json_string = types.AnnotateVideoResponse.to_json(response)
 
     # Write the dictionary to a JSON file
-    with open(local_path, 'w') as f:
-        json.dump(response_data, f, indent=2) # Use indent for pretty-printing
+    with open(local_path, 'w', encoding='utf-8') as f:
+        json.dump(json_string, f, indent=2) # Use indent for pretty-printing
 
     print(
         f"\nFinished processing video for {str(features)} annotations...\n"
