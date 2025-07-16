@@ -39,7 +39,6 @@ def get_blob(uri: str) -> any:
     bucket, path = uri.replace("gs://", "").split("/", 1)
     return storage.Client().get_bucket(bucket).get_blob(path)
 
-
 def upload_blob(uri: str, file_path: str) -> any:
     """Uploads GCS blob object from file."""
     bucket, path = uri.replace("gs://", "").split("/", 1)
@@ -48,10 +47,10 @@ def upload_blob(uri: str, file_path: str) -> any:
 
 def load_blob(annotation_uri: str):
     """Loads a blob to json"""
-    blob = get_blob(annotation_uri)
-    blob_json = json.loads(blob.download_as_string()).get("annotation_results")[0]
-    return blob_json
-
+    # Open and read the JSON file
+    with open(annotation_uri, 'r') as file:
+        data = json.load(file).get("annotation_results")[0]
+    return data
 
 def expand_uris(uris: list) -> any:
     """Expands any GCS URI entry that is a folder path into its files."""
