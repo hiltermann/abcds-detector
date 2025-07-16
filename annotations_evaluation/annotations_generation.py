@@ -146,60 +146,39 @@ def generate_video_annotations(config: Configuration, video_blob: str,
     )
 
     # Detect Standard annotations & Custom annotations
-    if not standard_annotations_blob:
-        tasks.append(
-            lambda: standard_annotations_detection(
-                standard_video_client, video_blob, standard_annotations_path
-            ),
+   
+    tasks.append(
+        lambda: standard_annotations_detection(
+            standard_video_client, video_blob, standard_annotations_path
+        ),
+    )
+    tasks.append(
+        lambda: custom_annotations_detection(
+            standard_video_client,
+            face_context,
+            [videointelligence.Feature.FACE_DETECTION],
+            video_blob,
+            face_annotations_path
         )
-    else:
-        print(
-            f"Text, Shot, Logo and Label annotations for video {video_path} already exist, API request skipped.\n"
+    )
+    tasks.append(
+        lambda: custom_annotations_detection(
+            custom_video_client,
+            person_context,
+            [videointelligence2.Feature.PERSON_DETECTION],
+            video_blob,
+            people_annotations_path,
         )
-    if not face_annotations_blob:
-        tasks.append(
-            lambda: custom_annotations_detection(
-                standard_video_client,
-                face_context,
-                [videointelligence.Feature.FACE_DETECTION],
-                video_blob,
-                face_annotations_path
-            )
+    )
+    tasks.append(
+        lambda: custom_annotations_detection(
+            standard_video_client,
+            speech_context,
+            [videointelligence.Feature.SPEECH_TRANSCRIPTION],
+            video_blob,
+            speech_annotations_path,
         )
-    else:
-        print(
-            f"Face annotations for video {video_path} already exist, API request skipped.\n"
-        )
-
-    if not people_annotations_blob:
-        tasks.append(
-            lambda: custom_annotations_detection(
-                custom_video_client,
-                person_context,
-                [videointelligence2.Feature.PERSON_DETECTION],
-                video_blob,
-                people_annotations_path,
-            )
-        )
-    else:
-        print(
-            f"People annotations for video {video_path} already exist, API request skipped.\n"
-        )
-
-    if not speech_annotations_blob:
-        tasks.append(
-            lambda: custom_annotations_detection(
-                standard_video_client,
-                speech_context,
-                [videointelligence.Feature.SPEECH_TRANSCRIPTION],
-                video_blob,
-                speech_annotations_path,
-            )
-        )
-    else:
-        print(
-            f"Speech annotations for video {video_path} already exist, API request skipped.\n"
-        )
+    )
 
     # Execute annotations generation tasks only for the ones that haven't been processed.
     execute_tasks_in_parallel(tasks)
