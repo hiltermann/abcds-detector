@@ -77,6 +77,8 @@ def execute_abcd_assessment_for_videos(config: Configuration):
   for video_blob in config.video_blobs:
     print(f"\n\nProcessing ABCD Assessment for video {video_blob['filename']}... \n")
 
+    video_assessment = { 'video_blob': video_blob }
+        
     if config.use_annotations:
       generate_video_annotations(config, video_blob['blob'], config.local_path)
       annotations_evaluated_features = evaluate_abcd_features_using_annotations(
