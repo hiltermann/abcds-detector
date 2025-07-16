@@ -29,7 +29,6 @@ from google.cloud import videointelligence_v1 as videointelligence2
 from configuration import Configuration
 from helpers.generic_helpers import (
     get_blob,
-    get_annotation_path,
     execute_tasks_in_parallel,
 )
 
