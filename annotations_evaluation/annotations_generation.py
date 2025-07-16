@@ -29,7 +29,7 @@ from google.cloud import videointelligence_v1 as videointelligence2
 from configuration import Configuration
 from helpers.generic_helpers import (
     get_blob,
-    get_annotation_uri,
+    get_annotation_path,
     execute_tasks_in_parallel,
 )
 
@@ -64,7 +64,7 @@ def standard_annotations_detection(
     print(f"\nProcessing video for {str(features)} annotations...")
     response = operation.result(timeout=800)
 
-    with open(local_path + '/example.txt', 'w') as f:
+    with open(local_path, 'w') as f:
       f.write(str(response))
 
     print(
@@ -91,7 +91,7 @@ def custom_annotations_detection(
     print(f"\nProcessing video for {str(features)} annotations...")
     response = operation.result(timeout=800)
 
-    with open(local_path + '/example_custom.txt', 'w') as f:
+    with open(local_path, 'w') as f:
       f.write(str(response))
 
     print(
@@ -133,33 +133,29 @@ def generate_video_annotations(config: Configuration, video_blob: str,
     # Video annotations processing
 
     tasks = []
-    # annotation_uri = get_annotation_uri(config, video_uri)
+    # annotation_path = get_annotation_uri(config, video_uri)
 
-    standard_annotations_uri = (
-        f"{annotation_uri}{Annotations.GENERIC_ANNOTATIONS.value}.json"
+    standard_annotations_path = (
+        f"{local_path}/{Annotations.GENERIC_ANNOTATIONS.value}.json"
     )
-    standard_annotations_blob = get_blob(standard_annotations_uri)
-    face_annotations_uri = f"{annotation_uri}{Annotations.FACE_ANNOTATIONS.value}.json"
-    face_annotations_blob = get_blob(face_annotations_uri)
-    people_annotations_uri = (
-        f"{annotation_uri}{Annotations.PEOPLE_ANNOTATIONS.value}.json"
+    face_annotations_path = f"{local_path}/{Annotations.FACE_ANNOTATIONS.value}.json"
+    people_annotations_path = (
+        f"{local_path}/{Annotations.PEOPLE_ANNOTATIONS.value}.json"
     )
-    people_annotations_blob = get_blob(people_annotations_uri)
-    speech_annotations_uri = (
-        f"{annotation_uri}{Annotations.SPEECH_ANNOTATIONS.value}.json"
+    speech_annotations_path = (
+        f"{local_path}/{Annotations.SPEECH_ANNOTATIONS.value}.json"
     )
-    speech_annotations_blob = get_blob(speech_annotations_uri)
 
     # Detect Standard annotations & Custom annotations
     if not standard_annotations_blob:
         tasks.append(
             lambda: standard_annotations_detection(
-                standard_video_client, video_blob
+                standard_video_client, video_blob, standard_annotations_path
             ),
         )
     else:
         print(
-            f"Text, Shot, Logo and Label annotations for video {video_uri} already exist, API request skipped.\n"
+            f"Text, Shot, Logo and Label annotations for video {video_path} already exist, API request skipped.\n"
         )
     if not face_annotations_blob:
         tasks.append(
@@ -167,12 +163,13 @@ def generate_video_annotations(config: Configuration, video_blob: str,
                 standard_video_client,
                 face_context,
                 [videointelligence.Feature.FACE_DETECTION],
-                video_blob
+                video_blob,
+                face_annotations_path
             )
         )
     else:
         print(
-            f"Face annotations for video {video_uri} already exist, API request skipped.\n"
+            f"Face annotations for video {video_path} already exist, API request skipped.\n"
         )
 
     if not people_annotations_blob:
@@ -181,13 +178,13 @@ def generate_video_annotations(config: Configuration, video_blob: str,
                 custom_video_client,
                 person_context,
                 [videointelligence2.Feature.PERSON_DETECTION],
-                video_uri,
-                people_annotations_uri,
+                video_blob,
+                people_annotations_path,
             )
         )
     else:
         print(
-            f"People annotations for video {video_uri} already exist, API request skipped.\n"
+            f"People annotations for video {video_path} already exist, API request skipped.\n"
         )
 
     if not speech_annotations_blob:
@@ -196,13 +193,13 @@ def generate_video_annotations(config: Configuration, video_blob: str,
                 standard_video_client,
                 speech_context,
                 [videointelligence.Feature.SPEECH_TRANSCRIPTION],
-                video_uri,
-                speech_annotations_uri,
+                video_blob,
+                speech_annotations_path,
             )
         )
     else:
         print(
-            f"Speech annotations for video {video_uri} already exist, API request skipped.\n"
+            f"Speech annotations for video {video_path} already exist, API request skipped.\n"
         )
 
     # Execute annotations generation tasks only for the ones that haven't been processed.
