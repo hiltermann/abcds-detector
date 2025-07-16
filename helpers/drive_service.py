@@ -75,12 +75,12 @@ def detect_format(url):
         print(f"Warning: Link provided is not a Google Drive Link: {url}")
         return None
 
-def display_products_table(products):
+def display_videos_table(videos):
     """
-    Helper function to display product in a legible table
+    Helper function to display video in a legible table
 
     Args:
-        products: A list of dictionaries, where each dictionary represents a product.
+        videos: A list of dictionaries, where each dictionary represents a video.
 
     Returns: None
 
@@ -90,7 +90,7 @@ def display_products_table(products):
         'Title': p['filename'],
         'Id': p['id'],
         'URL': p['video_url']
-    } for p in products])
+    } for p in videos])
 
     # Display as HTML table
     display(HTML(df.to_html(escape=False)))
@@ -164,7 +164,7 @@ def upload_blobs_to_gcs(config: Configuration, data_list: list, bucket_name: str
     return results
 
 def download_spreadsheet_data(config: Configuration):
-    """Downloads data from a Google Sheet, filtering by 'promo?' column.
+    """Downloads data from a Google Sheet, filtering by 'processed' column.
 
     Args:
         config: Configuration class.
@@ -203,39 +203,39 @@ def download_spreadsheet_data(config: Configuration):
         else:
             print("Warning: 'processed' column not found in the spreadsheet.")
 
-        # Store all products in an list of dictionaries
-        products = []
+        # Store all videos in an list of dictionaries
+        videos = []
 
         for index, row in df.iterrows():
-            product = {}
-            # Map columns to product attributes.
-            product['id'] = index
-            product['video_url'] = row.get('video_url', 'No image link found')
-            product['filename'] = row.get('filename', 'No filename found')
+            video = {}
+            # Map columns to video attributes.
+            video['id'] = index
+            video['video_url'] = row.get('video_url', 'No image link found')
+            video['filename'] = row.get('filename', 'No filename found')
 
-            # Download the product image
+            # Download the video
             try:
                 # Check if the url is a Google Drive link
-                if 'drive.google.com' in product['video_url']:
+                if 'drive.google.com' in video['video_url']:
                     # Extract the file ID from the Google Drive link
-                    file_id = product['video_url'].split('/')[-2]
+                    file_id = video['video_url'].split('/')[-2]
                     # Download the image using the Google Drive API
                     drive_service = build('drive', 'v3')
                     request = drive_service.files().get_media(fileId=file_id)
                     response = request.execute()
-                    product['blob'] = response
+                    video['blob'] = response
                 else:
                     # Download the image using requests library (for public URLs)
-                    response = requests.get(product['video_url'], timeout=10)
+                    response = requests.get(video['video_url'], timeout=10)
                     if response.status_code == 200:
-                        product['blob'] = response.content
+                        video['blob'] = response.content
                     else:
-                        product['blob'] = None
+                        video['blob'] = None
 
-                if product['blob']:
+                if video['blob']:
 
                     # Determine image format from the file extension
-                    format = detect_format(product['video_url'])
+                    format = detect_format(video['video_url'])
 
                     # Save in the original format if possible, otherwise use PNG
                     if format:
@@ -244,11 +244,11 @@ def download_spreadsheet_data(config: Configuration):
                         mime_type = "video/mp4"
 
             except Exception as e:
-                print(f"Error downloading file for {product['filename']}: {str(e)}")
-                product['blob'] = None
+                print(f"Error downloading file for {video['filename']}: {str(e)}")
+                video['blob'] = None
 
-            products.append(product)
-        return products
+            videos.append(video)
+        return videos
 
     except Exception as e:
         print(f"An error occurred: {e}")
