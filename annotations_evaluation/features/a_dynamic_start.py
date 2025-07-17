@@ -46,17 +46,12 @@ def detect_dynamic_start(config: Configuration, feature_name: str, video_uri: st
     # Video API: Evaluate dynamic_start_feature
     if "shot_annotations" in shot_annotation_results:
         first_shot_end_time_off_set = shot_annotation_results.get("shot_annotations")[0]
-        nanos = first_shot_end_time_off_set.get("end_time_offset").get("nanos")
-        seconds = first_shot_end_time_off_set.get("end_time_offset").get("seconds")
+        seconds = first_shot_end_time_off_set.get("end_time_offset")
         total_ms_first_shot = 0
-        if nanos:
-            if seconds:
-                total_ms_first_shot = (nanos + seconds * 1e9) / 1e6
-            else:
-                total_ms_first_shot = nanos / 1e6
-        else:
-            if seconds:
-                total_ms_first_shot = (seconds * 1e9) / 1e6
+
+        if seconds:
+            seconds.replace("s", "")
+            total_ms_first_shot = (float(seconds) * 1e9) / 1e6
 
         if total_ms_first_shot < config.dynamic_cutoff_ms:
             dynamic_start = True
