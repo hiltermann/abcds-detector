@@ -94,6 +94,7 @@ def print_abcd_assessment(brand_name: str, video_assessment: dict) -> None:
  
     print(f"***** ABCD Assessment for brand {brand_name} ***** \n")
     print(f"Asset name: {video_assessment.get('video_blob').get('filename')} \n")
+    print(f"Asset link: {video_assessment.get('video_blob').get('video_url')} \n")
 
     # Get ABCD evaluations
     if video_assessment.get("annotations_evaluation"):
