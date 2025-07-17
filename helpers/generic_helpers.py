@@ -31,7 +31,12 @@ from google.cloud import storage
 from moviepy.editor import VideoFileClip
 from helpers.bq_service import BigQueryService
 from feature_configs.features import get_feature_configs
+from camel_converter.decorators import dict_to_snake
 from configuration import FFMPEG_BUFFER, FFMPEG_BUFFER_REDUCED, Configuration
+
+@dict_to_snake
+def convert_json_keys(input) -> dict[str, str]:
+    return input
 
 
 def get_blob(uri: str) -> any:
