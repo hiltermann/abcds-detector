@@ -165,7 +165,7 @@ def print_abcd_assessment(brand_name: str, video_assessment: dict) -> None:
     # Get ABCD evaluations
     if video_assessment.get("annotations_evaluation"):
         print("***** ABCD Assessment using Annotations ***** \n")
-        a = list(video_assessment.get("annotations_evaluation").keys())
+        a = list(video_assessment.get("annotations_evaluation").get("evaluated_features").keys())
         print(a)
         # print_score_details(video_assessment.get("annotations_evaluation"))
         
