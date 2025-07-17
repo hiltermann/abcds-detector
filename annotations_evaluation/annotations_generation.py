@@ -125,7 +125,7 @@ def custom_annotations_detection(
     )
 
 
-def generate_video_annotations(config: Configuration, video_blob: str,
+def generate_video_annotations(config: Configuration, video_blob: dict[str, str],
                                local_path: str) -> None:
     """Generates video annotations for videos in Google Cloud Storage"""
 
@@ -177,7 +177,7 @@ def generate_video_annotations(config: Configuration, video_blob: str,
    
     tasks.append(
         lambda: standard_annotations_detection(
-            standard_video_client, video_blob, standard_annotations_path, video_path
+            standard_video_client, video_blob['blob'], standard_annotations_path, video_path
         ),
     )
     tasks.append(
@@ -185,7 +185,7 @@ def generate_video_annotations(config: Configuration, video_blob: str,
             standard_video_client,
             face_context,
             [videointelligence.Feature.FACE_DETECTION],
-            video_blob,
+            video_blob['blob'],
             face_annotations_path,
             video_path
         )
@@ -195,7 +195,7 @@ def generate_video_annotations(config: Configuration, video_blob: str,
             custom_video_client,
             person_context,
             [videointelligence2.Feature.PERSON_DETECTION],
-            video_blob,
+            video_blob['blob'],
             people_annotations_path,
             video_path
         )
@@ -205,7 +205,7 @@ def generate_video_annotations(config: Configuration, video_blob: str,
             standard_video_client,
             speech_context,
             [videointelligence.Feature.SPEECH_TRANSCRIPTION],
-            video_blob,
+            video_blob['blob'],
             speech_annotations_path,
             video_path
         )
