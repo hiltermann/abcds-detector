@@ -41,26 +41,16 @@ class Configuration:
         """
         # set parameters
         self.project_id = ""
-        self.project_zone = "us-central1"
-        self.bucket_name = ""
         self.knowledge_graph_api_key = ""
-        self.bq_dataset_name = "abcd_detector_ds"
-        self.bq_table_name = "abcd_assessments"
         self.assessment_file = ""
         self.spreadsheet_id = ""
         self.input_sheet = ""
         self.output_sheet = ""
         self.use_annotations = True
-        self.use_llms = True
-        self.verbose = True
-        self.annotation_path = ""
 
         # set videos
         self.video_blobs = []
         self.video_uris = []
-
-        # GCS to Drive mapping
-        self.gcs_drive_mapping = {}
 
         # set brand
         self.brand_name = ""
@@ -106,7 +96,6 @@ class Configuration:
         self.output_sheet = output_sheet
         self.use_annotations = use_annotations
         self.local_path = local_path
-        self.annotation_path = f"gs://{bucket_name}/ABCD/"
 
     def set_brand_details(self,
         brand_name: str,
