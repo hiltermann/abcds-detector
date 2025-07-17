@@ -5,3 +5,4 @@ moviepy
 google-api-python-client
 pandas
 pyarrow
+camel-converter
