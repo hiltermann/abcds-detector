@@ -35,9 +35,7 @@ def calculate_time_seconds(part_obj: dict, part: str) -> float:
         # TODO (ae) check this later
         return 0
     time_seconds = (
-        (part_obj.get(part).get("seconds") or 0)
-        + ((part_obj.get(part).get("microseconds") or 0) / 1e6)
-        + ((part_obj.get(part).get("nanos") or 0) / 1e9)
+        (float(part_obj.get(part).replace("s", "")) or 0)
     )
     return time_seconds
 
