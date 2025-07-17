@@ -163,14 +163,14 @@ def generate_video_annotations(config: Configuration, video_blob: str,
 
     video_path =  f"{local_path}/{video_blob['filename']}"                    
     standard_annotations_path = (
-        f"{local_path}/{video_blob["filename"]}/{Annotations.GENERIC_ANNOTATIONS.value}.json"
+        f"{local_path}/{video_blob['filename']}/{Annotations.GENERIC_ANNOTATIONS.value}.json"
     )
     face_annotations_path = f"{local_path}/{video_blob["filename"]}/{Annotations.FACE_ANNOTATIONS.value}.json"
     people_annotations_path = (
-        f"{local_path}/{video_blob["filename"]}/{Annotations.PEOPLE_ANNOTATIONS.value}.json"
+        f"{local_path}/{video_blob['filename']}/{Annotations.PEOPLE_ANNOTATIONS.value}.json"
     )
     speech_annotations_path = (
-        f"{local_path}/{video_blob["filename"]}/{Annotations.SPEECH_ANNOTATIONS.value}.json"
+        f"{local_path}/{video_blob['filename']}/{Annotations.SPEECH_ANNOTATIONS.value}.json"
     )
 
     # Detect Standard annotations & Custom annotations
