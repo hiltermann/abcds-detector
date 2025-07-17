@@ -47,7 +47,7 @@ def detect_quick_pacing(
     return quick_pacing
 
 
-def detect_quick_pacing_1st_5_secs(config: Configuration, feature_name: str, video_uri: str) -> dict:
+def detect_quick_pacing_1st_5_secs(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> dict:
     """Detect Quick Pacing (First 5 seconds)
     Args:
         feature_name: the name of the feature
@@ -62,7 +62,7 @@ def detect_quick_pacing_1st_5_secs(config: Configuration, feature_name: str, vid
     return quick_pacing_1st_5_secs
 
 
-def detect(config: Configuration, feature_name: str, video_uri: str) -> tuple[bool, bool]:
+def detect(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> tuple[bool, bool]:
     """Detect Quick Pacing & Quick Pacing (First 5 seconds)
     Args:
         feature_name: the name of the feature
