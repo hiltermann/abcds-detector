@@ -29,7 +29,7 @@ from helpers.generic_helpers import load_blob, get_annotation_uri
 from configuration import Configuration
 
 
-def detect_overall_pacing(config: Configuration, feature_name: str, video_uri: str) -> dict:
+def detect_overall_pacing(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> dict:
     """Detect Overall Pacing
     Args:
         config: all the parameters
