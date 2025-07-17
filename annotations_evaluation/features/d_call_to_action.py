@@ -30,7 +30,7 @@ from helpers.generic_helpers import load_blob, get_annotation_uri, get_call_to_a
 from configuration import Configuration
 
 
-def detect_call_to_action_speech(config: Configuration, feature_name: str, video_uri: str) -> bool:
+def detect_call_to_action_speech(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> bool:
     """Detect Call To Action (Speech)
     Args:
         config: all the parameters
@@ -77,7 +77,7 @@ def detect_call_to_action_speech(config: Configuration, feature_name: str, video
     return call_to_action_speech
 
 
-def detect_call_to_action_text(config: Configuration, feature_name: str, video_uri: str) -> bool:
+def detect_call_to_action_text(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> bool:
     """Detect Call To Action (Text)
     Args:
         config: all the parameters
