@@ -50,8 +50,7 @@ def detect_dynamic_start(config: Configuration, feature_name: str, video_uri: st
         total_ms_first_shot = 0
 
         if seconds:
-            seconds.replace("s", "")
-            total_ms_first_shot = (float(seconds) * 1e9) / 1e6
+            total_ms_first_shot = (float(seconds.replace("s", "")) * 1e9) / 1e6
 
         if total_ms_first_shot < config.dynamic_cutoff_ms:
             dynamic_start = True
