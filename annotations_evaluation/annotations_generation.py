@@ -27,6 +27,7 @@ from google.cloud import videointelligence
 from google.cloud.videointelligence import VideoContext
 from google.cloud import videointelligence_v1 as videointelligence2
 from google.cloud.videointelligence_v1 import types
+from google.protobuf.json.format import MessageToDict
 from configuration import Configuration
 from helpers.generic_helpers import (
     get_blob,
@@ -64,13 +65,17 @@ def standard_annotations_detection(
     )
     print(f"\nProcessing video for {str(features)} annotations...")
     response = operation.result(timeout=800)
+    
+    dict_data = MessageToDict(
+        response._pb,
+        preserving_proto_field_name=True,
+        always_print_fields_with_no_presence=True,  # optional: include default values if needed
+        use_integers_for_enums=True
+    )
+    # dict_data = convert_durations_in_dict(dict_data)
 
-    # Convert the protobuf response object to a Python dictionary
-    json_string = types.AnnotateVideoResponse.to_json(convert_json_keys(response))
-
-    # Write the dictionary to a JSON file
-    with open(local_path, 'w', encoding='utf-8') as f:
-        f.write(json_string)
+    with open(local_path, 'w') as f:
+        json.dump(dict_data, f, indent=2)
 
     print(
         f"\nFinished processing video for {str(features)} annotations...\n"
@@ -95,13 +100,17 @@ def custom_annotations_detection(
     )
     print(f"\nProcessing video for {str(features)} annotations...")
     response = operation.result(timeout=800)
+    
+    dict_data = MessageToDict(
+        response._pb,
+        preserving_proto_field_name=True,
+        always_print_fields_with_no_presence=True,  # optional: include default values if needed
+        use_integers_for_enums=True
+    )
+    # dict_data = convert_durations_in_dict(dict_data)
 
-    # Convert the protobuf response object to a Python dictionary
-    json_string = types.AnnotateVideoResponse.to_json(convert_json_keys(response))
-
-    # Write the dictionary to a JSON file
     with open(local_path, 'w') as f:
-        f.write(json_string)
+        json.dump(dict_data, f, indent=2)
 
     print(
         f"\nFinished processing video for {str(features)} annotations...\n"
