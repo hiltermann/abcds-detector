@@ -29,7 +29,7 @@ from helpers.generic_helpers import load_blob, get_annotation_uri
 from configuration import Configuration
 
 
-def detect_visible_face(config: Configuration, feature_name: str, video_uri: str) -> bool:
+def detect_visible_face(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> bool:
     """Detect Visible Face (First 5 seconds)
     Args:
         config: all the parameters
@@ -65,7 +65,7 @@ def detect_visible_face_close_up(
     return visible_face_close_up
 
 
-def detect(config: Configuration, feature_name: str, video_uri: str) -> tuple[bool, bool]:
+def detect(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> tuple[bool, bool]:
     """Detect Visible Face (First 5 seconds) & Visible Face (Close Up)
     Args:
         feature_name: the name of the feature
