@@ -21,6 +21,7 @@
 """Module to execute the ABCD Detector Assessment"""
 
 import json
+import os
 import time
 from annotations_evaluation.annotations_generation import generate_video_annotations
 from annotations_evaluation.evaluation import evaluate_abcd_features_using_annotations
@@ -80,6 +81,8 @@ def execute_abcd_assessment_for_videos(config: Configuration):
     video_assessment = { 'video_blob': video_blob }
         
     if config.use_annotations:
+      if not os.path.exists(config.local_path):
+        os.makedirs(config.local_path)
       generate_video_annotations(config, video_blob['blob'], config.local_path)
       annotations_evaluated_features = evaluate_abcd_features_using_annotations(
           config,
