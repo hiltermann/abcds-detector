@@ -67,7 +67,7 @@ def detect_product_mention_speech_1st_5_secs(
     return product_mention_speech_1st_5_secs
 
 
-def detect(config: Configuration, feature_name: str, video_uri: str) -> tuple[bool, bool]:
+def detect(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> tuple[bool, bool]:
     """Detect Product Mention (Speech) & Product Mention (Speech) (First 5 seconds)
     Args:
         config: all the parameters 
