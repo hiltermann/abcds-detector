@@ -29,7 +29,7 @@ from helpers.annotations_helpers import find_elements_in_transcript
 from configuration import Configuration
 
 
-def detect_brand_mention_speech(config: Configuration, feature_name: str, video_uri: str) -> bool:
+def detect_brand_mention_speech(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> bool:
     """Detect Brand Mention (Speech)
     Args:
         feature_name: the name of the feature
