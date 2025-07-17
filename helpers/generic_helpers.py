@@ -26,23 +26,10 @@ import urllib
 import datetime
 from concurrent.futures import ThreadPoolExecutor
 import pandas
-from google.cloud import bigquery
-from google.cloud import storage
 from moviepy.editor import VideoFileClip
-from helpers.bq_service import BigQueryService
 from feature_configs.features import get_feature_configs
 from configuration import FFMPEG_BUFFER, FFMPEG_BUFFER_REDUCED, Configuration
 
-
-def get_blob(uri: str) -> any:
-    """Return GCS blob object from full uri."""
-    bucket, path = uri.replace("gs://", "").split("/", 1)
-    return storage.Client().get_bucket(bucket).get_blob(path)
-
-def upload_blob(uri: str, file_path: str) -> any:
-    """Uploads GCS blob object from file."""
-    bucket, path = uri.replace("gs://", "").split("/", 1)
-    storage.Client().get_bucket(bucket).blob(path).upload_from_filename(file_path)
 
 def load_blob(annotation_uri: str):
     """Loads a blob to json"""
@@ -51,32 +38,13 @@ def load_blob(annotation_uri: str):
         data = json.load(file).get("annotation_results")[0]
     return data
 
-def expand_uris(uris: list) -> any:
-    """Expands any GCS URI entry that is a folder path into its files."""
-    for uri in uris:
-        if uri.endswith("/"):
-            print(f"EXPANDING URI: {uri} \n")
-            bucket, prefix = uri.replace("gs://", "").split("/", 1)
-            for blob in (
-                storage.Client()
-                .get_bucket(bucket)
-                .list_blobs(prefix=prefix, delimiter="/")
-            ):
-                if not blob.name.endswith("/"):
-                    yield f"gs://{bucket}/{blob.name}"
-        else:
-            yield uri
-
-
 def get_annotation_uri(config: Configuration, video_uri: dict[str, str]) -> str:
     """Helper to translate video to annotation uri."""
     return  config.local_path + "/" + video_uri["filename"] + "/"
 
-
 def get_reduced_uri(config: Configuration, video_uri: str) -> str:
     """Helper to translate video to reduced video uri."""
     return get_annotation_uri(config, video_uri) + "reduced_1st_5_secs.mp4"
-
 
 def get_knowledge_graph_entities(config: Configuration, queries: list[str]) -> dict[str, dict]:
     """Get the knowledge Graph Entities for a list of queries
@@ -114,47 +82,12 @@ def get_knowledge_graph_entities(config: Configuration, queries: list[str]) -> d
         )
         raise
 
-
 def remove_local_video_files():
     """Removes local video files"""
     if os.path.exists(FFMPEG_BUFFER):
         os.remove(FFMPEG_BUFFER)
     if os.path.exists(FFMPEG_BUFFER_REDUCED):
         os.remove(FFMPEG_BUFFER_REDUCED)
-
-
-def trim_video(config: Configuration, video_uri: str):
-    """Trims videos to create new versions of 5 secs
-    Args:
-        config: all the parameters
-        video_uri: the video to trim the length for
-    """
-    reduced_uri = get_reduced_uri(config, video_uri)
-    reduced_blob = get_blob(reduced_uri)
-    print(f"REDUCED: {reduced_uri} \n")
-    if reduced_blob is None:
-        print(f"Shortening video {video_uri}. \n")
-
-        # download
-        with open(FFMPEG_BUFFER, "wb") as f:
-            f.write(get_blob(video_uri).download_as_string(client=None))
-
-        # trim
-        clip = VideoFileClip(FFMPEG_BUFFER)
-        clip = clip.subclip(0, 5)
-        clip.write_videofile(FFMPEG_BUFFER_REDUCED)
-
-        # upload
-        upload_blob(reduced_uri, FFMPEG_BUFFER_REDUCED)
-
-    else:
-        print(f"Video {video_uri} has already been trimmed. Skipping...\n")
-
-
-def player(video_url: str):
-    """Placeholder function to test locally"""
-    print(f"{video_url} \n")
-
 
 def print_abcd_assessment(brand_name: str, video_assessment: dict) -> None:
     """Print ABCD Assessments"""
@@ -277,16 +210,6 @@ def calculate_score(evaluated_features: list[str]) -> float:
     )
     return score
 
-
-def get_video_name_from_uri(uri: str):
-    """Gets the video name from the video uri"""
-    video_parts = uri.split("/")
-    if len(video_parts) > 0:
-        # Video name is the last element
-        return video_parts[-1]
-    return ""
-
-
 def get_feature_by_id(features: list[dict], feature_id: str) -> list[str]:
     """Get feature configs by id"""
     features_found = [
@@ -297,87 +220,6 @@ def get_feature_by_id(features: list[dict], feature_id: str) -> list[str]:
     if len(features_found) > 0:
         return features_found[0]
     return None
-
-
-def get_table_columns_schema() -> list[str]:
-    """Gets the table columns schema for the assessments table in BQ."""
-    return [
-        {
-            "column": "execution_timestamp",
-            "data_type": bigquery.enums.SqlTypeNames.TIMESTAMP,
-        },
-        {"column": "brand_name", "data_type": bigquery.enums.SqlTypeNames.STRING},
-        {"column": "video_id", "data_type": bigquery.enums.SqlTypeNames.STRING},
-        {"column": "video_name", "data_type": bigquery.enums.SqlTypeNames.STRING},
-        {"column": "video_uri", "data_type": bigquery.enums.SqlTypeNames.STRING},
-        {"column": "feature_id", "data_type": bigquery.enums.SqlTypeNames.STRING},
-        {"column": "feature_name", "data_type": bigquery.enums.SqlTypeNames.STRING},
-        {"column": "feature_category", "data_type": bigquery.enums.SqlTypeNames.STRING},
-        {"column": "feature_criteria", "data_type": bigquery.enums.SqlTypeNames.STRING},
-        {
-            "column": "using_annotations",
-            "data_type": bigquery.enums.SqlTypeNames.BOOLEAN,
-        },
-        {
-            "column": "annotations_evaluation",
-            "data_type": bigquery.enums.SqlTypeNames.BOOLEAN,
-        },
-        {"column": "using_llms", "data_type": bigquery.enums.SqlTypeNames.BOOLEAN},
-        {"column": "llms_evaluation", "data_type": bigquery.enums.SqlTypeNames.BOOLEAN},
-        {"column": "llm_explanation", "data_type": bigquery.enums.SqlTypeNames.STRING},
-        {"column": "prompt_params", "data_type": bigquery.enums.SqlTypeNames.STRING},
-        {"column": "llm_params", "data_type": bigquery.enums.SqlTypeNames.STRING},
-    ]
-
-
-def get_table_columns() -> list[str]:
-    """Gets the table columns for the assessments table in BQ."""
-    columns = []
-    for column_schema in get_table_columns_schema():
-        columns.append(column_schema.get("column"))
-    return columns
-
-
-def get_table_schema() -> list[bigquery.SchemaField]:
-    """Gets the schema for the assessments table in BQ."""
-    schema = []
-    for column_schema in get_table_columns_schema():
-        schema.append(
-            bigquery.SchemaField(
-                column_schema.get("column"), column_schema.get("data_type")
-            )
-        )
-    return schema
-
-
-def build_features_for_bq(video_uri: str, brand_name: str) -> list[dict]:
-    """Builds features schema with values and default values for table in BQ"""
-    assessment_bq = []
-    feature_configs = get_feature_configs()
-    # Insert all feature configs first
-    for f_config in feature_configs:
-        assessment_bq.append(
-            {
-                "execution_timestamp": datetime.datetime.now(),
-                "brand_name": brand_name,
-                "video_id": video_uri,
-                "video_name": get_video_name_from_uri(video_uri),
-                "video_uri": video_uri,
-                "feature_id": f_config.get("id"),
-                "feature_name": f_config.get("name"),
-                "feature_category": f_config.get("category"),
-                "feature_criteria": f_config.get("criteria"),
-                "using_annotations": False,  # Default value to build a correct schema from the beginning
-                "annotations_evaluation": False,  # Default value to build a correct schema from the beginning
-                "using_llms": False,  # Default value to build a correct schema from the beginning
-                "llms_evaluation": False,  # Default value to build a correct schema from the beginning
-                "llm_explanation": "",  # Default value to build a correct schema from the beginning
-                "prompt_params": "",  # Default value to build a correct schema from the beginning
-                "llm_params": "",  # Default value to build a correct schema from the beginning
-            }
-        )
-    return assessment_bq
-
 
 def update_annotations_evaluated_features(
     assessment_bq: list[dict], annotations_evaluation: list[dict]
@@ -403,88 +245,3 @@ def update_annotations_evaluated_features(
                 )
     else:
         print("No annotations_evaluation found. Skipping from storing it in BQ. \n")
-
-
-def update_llms_evaluated_features(
-    assessment_bq: list[dict],
-    llms_evaluation: list[dict],
-    prompt_params: dict,
-    llm_params: dict,
-) -> None:
-    """Updates default values with llms evaluated features values
-    Finds the feature in assessment_bq and updates with llms evaluation
-    """
-    if llms_evaluation:
-        for llms_eval_feature in llms_evaluation.get("evaluated_features"):
-            feature_found = get_feature_by_id(
-                assessment_bq, llms_eval_feature.get("id")
-            )
-
-            if feature_found:
-                feature_found["using_llms"] = True
-                feature_found["llms_evaluation"] = llms_eval_feature.get("detected")
-                feature_found["llm_explanation"] = llms_eval_feature.get(
-                    "llm_explanation"
-                )
-                feature_found["prompt_params"] = str(prompt_params)
-                feature_found["llm_params"] = str(llm_params)
-            else:
-                print(
-                    f"LLMs evaluation: Feature {llms_eval_feature.get('id')} not found. Skipping from storing it in BQ. \n"
-                )
-    else:
-        print("No llms_evaluation found. Skipping from storing it in BQ. \n")
-
-
-def store_in_bq(
-    config: Configuration,
-    bq_service: BigQueryService,
-    video_assessment: dict,
-    prompt_params: any,
-    llm_params: any,
-):
-    """Store ABCD assessment results in BQ"""
-
-    print(
-        f"Storing ABCD assessment for video {video_assessment.get('video_uri')} in BigQuery... \n"
-    )
-
-    assessment_bq = build_features_for_bq(
-        video_assessment.get("video_uri"), prompt_params.brand_name
-    )
-
-    annotations_evaluation = video_assessment.get("annotations_evaluation")
-    update_annotations_evaluated_features(assessment_bq, annotations_evaluation)
-
-    llms_evaluation = video_assessment.get("llms_evaluation")
-    update_llms_evaluated_features(
-        assessment_bq, llms_evaluation, prompt_params.__dict__, llm_params.__dict__
-    )
-
-    # Insert if there is any feature evaluation
-    if (annotations_evaluation or llms_evaluation) and len(assessment_bq) > 0:
-        columns = get_table_columns()
-        dataframe = pandas.DataFrame(
-            assessment_bq,
-            # In the loaded table, the column order reflects the order of the
-            # columns in the DataFrame.
-            columns=columns,
-        )
-        # Create dataset if it does not exist
-        bq_service.create_dataset(config.bq_dataset_name, config.project_zone)
-        schema = get_table_schema()
-        table_created = bq_service.create_table(config.bq_dataset_name, config.bq_table_name, schema)
-        # Wait for table creation
-        if table_created:
-            print(f"Inserting {len(assessment_bq)} rows into BQ... \n")
-            bq_service.load_table_from_dataframe(
-                config.bq_dataset_name, config.bq_table_name, dataframe, schema, "WRITE_APPEND"
-            )
-        else:
-            print(
-                f"Error: ABCD assessments not loaded to table {config.bq_dataset_name}.{config.bq_table_name} because the table could not be created. \n"
-            )
-    else:
-        print(
-            f"There are no rows to insert into BQ for video {video_assessment.get('video_uri')}. \n"
-        )
