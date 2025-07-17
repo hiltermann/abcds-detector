@@ -144,7 +144,7 @@ def main(arg_list: list[str] | None = None) -> None:
   print("Starting ABCD assessment... \n")
 
   if config.video_blobs:
-    execute_abcd_assessment_for_videos(config)
+    output = execute_abcd_assessment_for_videos(config)
     print("Finished ABCD assessment. \n")
   else:
     print("There are no videos to process. \n")
