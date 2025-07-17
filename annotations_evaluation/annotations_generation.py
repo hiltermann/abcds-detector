@@ -21,6 +21,7 @@
 """Module to generate video annotations using the Video Intelligence API"""
 
 import json
+import os
 
 from enum import Enum
 from google.cloud import videointelligence
@@ -47,7 +48,8 @@ class Annotations(Enum):
 def standard_annotations_detection(
     video_client: videointelligence.VideoIntelligenceServiceClient,
     video_blob: str,
-    local_path: str
+    local_path: str,
+    video_path: str
 ) -> None:
     """Detect the following standard annotations: Text, Shot, Logo and Label"""
     features = [
@@ -73,6 +75,9 @@ def standard_annotations_detection(
     )
     # dict_data = convert_durations_in_dict(dict_data)
 
+    if not os.path.exists(video_path):
+      os.makedirs(video_path)
+
     with open(local_path, 'w') as f:
         json.dump(dict_data, f, indent=2)
 
@@ -86,7 +91,8 @@ def custom_annotations_detection(
     context: VideoContext,
     features: list[videointelligence.Feature],
     video_blob: str,
-    local_path: str
+    local_path: str,
+    video_path: str
 ) -> None:
     """Detect the following custom annotations: Face, People and Speech"""
 
@@ -107,6 +113,9 @@ def custom_annotations_detection(
         use_integers_for_enums=True
     )
     # dict_data = convert_durations_in_dict(dict_data)
+
+    if not os.path.exists(video_path):
+      os.makedirs(video_path)
 
     with open(local_path, 'w') as f:
         json.dump(dict_data, f, indent=2)
@@ -152,22 +161,23 @@ def generate_video_annotations(config: Configuration, video_blob: str,
     tasks = []
     # annotation_path = get_annotation_uri(config, video_uri)
 
+    video_path =  f"{local_path}/{video_blob["filename"]}                         
     standard_annotations_path = (
-        f"{local_path}/{Annotations.GENERIC_ANNOTATIONS.value}.json"
+        f"{local_path}/{video_blob["filename"]}/{Annotations.GENERIC_ANNOTATIONS.value}.json"
     )
-    face_annotations_path = f"{local_path}/{Annotations.FACE_ANNOTATIONS.value}.json"
+    face_annotations_path = f"{local_path}/{video_blob["filename"]}/{Annotations.FACE_ANNOTATIONS.value}.json"
     people_annotations_path = (
-        f"{local_path}/{Annotations.PEOPLE_ANNOTATIONS.value}.json"
+        f"{local_path}/{video_blob["filename"]}/{Annotations.PEOPLE_ANNOTATIONS.value}.json"
     )
     speech_annotations_path = (
-        f"{local_path}/{Annotations.SPEECH_ANNOTATIONS.value}.json"
+        f"{local_path}/{video_blob["filename"]}/{Annotations.SPEECH_ANNOTATIONS.value}.json"
     )
 
     # Detect Standard annotations & Custom annotations
    
     tasks.append(
         lambda: standard_annotations_detection(
-            standard_video_client, video_blob, standard_annotations_path
+            standard_video_client, video_blob, standard_annotations_path, video_path
         ),
     )
     tasks.append(
@@ -176,7 +186,8 @@ def generate_video_annotations(config: Configuration, video_blob: str,
             face_context,
             [videointelligence.Feature.FACE_DETECTION],
             video_blob,
-            face_annotations_path
+            face_annotations_path,
+            video_path
         )
     )
     tasks.append(
@@ -186,6 +197,7 @@ def generate_video_annotations(config: Configuration, video_blob: str,
             [videointelligence2.Feature.PERSON_DETECTION],
             video_blob,
             people_annotations_path,
+            video_path
         )
     )
     tasks.append(
@@ -195,6 +207,7 @@ def generate_video_annotations(config: Configuration, video_blob: str,
             [videointelligence.Feature.SPEECH_TRANSCRIPTION],
             video_blob,
             speech_annotations_path,
+            video_path
         )
     )
 
