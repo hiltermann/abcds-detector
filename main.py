@@ -35,8 +35,6 @@ from helpers.generic_helpers import (
     expand_uris,
     get_blob,
     print_abcd_assessment,
-    trim_video,
-    store_in_bq,
     remove_local_video_files
 )
 from helpers.vertex_ai_service import LLMParameters
@@ -47,32 +45,6 @@ from utils import parse_args, build_abcd_params_config
 
 def execute_abcd_assessment_for_videos(config: Configuration):
   """Execute ABCD Assessment for all brand videos in GCS"""
-
-  prompt_params = PromptParams(
-      config.brand_name,
-      config.brand_variations,
-      config.branded_products,
-      config.branded_products_categories,
-      config.branded_call_to_actions,
-  )
-
-  llm_params = LLMParameters(
-      model_name=config.llm_name,
-      location=config.project_zone,
-      generation_config={
-          "max_output_tokens": config.max_output_tokens,
-          "temperature": config.temperature,
-          "top_p": config.top_p,
-          "top_k": config.top_k,
-      }
-  )
-
-  brand_assessment = {
-      "brand_name": config.brand_name,
-      "video_assessments": [],
-      "prompt_params": prompt_params.__dict__,
-      "llm_params": llm_params.__dict__,
-  }
 
   for video_blob in config.video_blobs:
     print(f"\n\nProcessing ABCD Assessment for video {video_blob['filename']}... \n")
@@ -92,11 +64,6 @@ def execute_abcd_assessment_for_videos(config: Configuration):
       }
 
     print_abcd_assessment(config.brand_name, video_assessment)
-    brand_assessment.get("video_assessments").append(video_assessment)
-
-    if config.bq_table_name:
-      bq_service = BigQueryService(config.project_id)
-      store_in_bq(config, bq_service, video_assessment, prompt_params, llm_params)
         
     if config.output_sheet and config.spreadsheet_id:
       if config.use_annotations:      
@@ -118,12 +85,6 @@ def execute_abcd_assessment_for_videos(config: Configuration):
       sheet_df = sheet.as_df()
       df_output_sheet = pandas.concat([sheet_df,assessment_df])
       updated_sheet = sheet.update(df_output_sheet)
-
-  if config.assessment_file:
-    with open(config.assessment_file, "w", encoding="utf-8") as f:
-      json.dump(brand_assessment, f, ensure_ascii=False, indent=4)
-
-  return brand_assessment
 
 
 def main(arg_list: list[str] | None = None) -> None:
