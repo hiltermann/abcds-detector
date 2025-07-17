@@ -38,7 +38,6 @@ from configuration import FFMPEG_BUFFER, FFMPEG_BUFFER_REDUCED, Configuration
 def convert_json_keys(input) -> dict[str, str]:
     return input
 
-
 def get_blob(uri: str) -> any:
     """Return GCS blob object from full uri."""
     bucket, path = uri.replace("gs://", "").split("/", 1)
@@ -48,7 +47,6 @@ def upload_blob(uri: str, file_path: str) -> any:
     """Uploads GCS blob object from file."""
     bucket, path = uri.replace("gs://", "").split("/", 1)
     storage.Client().get_bucket(bucket).blob(path).upload_from_filename(file_path)
-
 
 def load_blob(annotation_uri: str):
     """Loads a blob to json"""
