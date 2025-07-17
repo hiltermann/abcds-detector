@@ -114,7 +114,7 @@ def execute_abcd_assessment_for_videos(config: Configuration):
     remove_local_video_files()
 
     if config.output_sheet and config.spreadsheet_id:
-      sheet = sheets.InteractiveSheet(sheet_id=config.spreadsheet_id, worksheet_name=config.output_sheet)
+      sheet = sheets.InteractiveSheet(sheet_id=config.spreadsheet_id, worksheet_name=config.output_sheet, display=False)
       sheet_df = sheet.as_df()
       df_output_sheet = pandas.concat([sheet_df,assessment_df])
       updated_sheet = sheet.update(df_output_sheet)
