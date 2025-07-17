@@ -161,7 +161,7 @@ def generate_video_annotations(config: Configuration, video_blob: str,
     tasks = []
     # annotation_path = get_annotation_uri(config, video_uri)
 
-    video_path =  f"{local_path}/{video_blob["filename"]}                         
+    video_path =  f"{local_path}/{video_blob['filename']}"                    
     standard_annotations_path = (
         f"{local_path}/{video_blob["filename"]}/{Annotations.GENERIC_ANNOTATIONS.value}.json"
     )
