@@ -30,7 +30,7 @@ from helpers.annotations_helpers import find_elements_in_transcript
 from configuration import Configuration
 
 
-def detect_supers(config: Configuration, feature_name: str, video_uri: str) -> bool:
+def detect_supers(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> bool:
     """Detect Supers
     Args:
         feature_name: the name of the feature
