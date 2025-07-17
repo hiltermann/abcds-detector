@@ -28,7 +28,7 @@ from helpers.generic_helpers import load_blob, get_annotation_uri
 from configuration import Configuration
 
 
-def detect_dynamic_start(config: Configuration, feature_name: str, video_uri: str
+def detect_dynamic_start(config: Configuration, feature_name: str, video_uri: dict[str, str]
 ) -> dict:
     """Detects Dynamic Start
     Args:
