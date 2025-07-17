@@ -1,6 +1,4 @@
-google-cloud-aiplatform
 google-cloud-videointelligence
-google-cloud-storage
 moviepy
 google-api-python-client
 pandas
