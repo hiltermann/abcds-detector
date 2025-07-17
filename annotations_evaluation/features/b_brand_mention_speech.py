@@ -44,7 +44,7 @@ def detect_brand_mention_speech(config: Configuration, feature_name: str, video_
     return brand_mention_speech
 
 
-def detect_brand_mention_speech_1st_5_secs(config: Configuration, feature_name: str, video_uri: str) -> bool:
+def detect_brand_mention_speech_1st_5_secs(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> bool:
     """Detect Brand Mention (Speech) (First 5 seconds)
     Args:
         feature_name: the name of the feature
@@ -59,7 +59,7 @@ def detect_brand_mention_speech_1st_5_secs(config: Configuration, feature_name: 
     return brand_mention_speech_1st_5_secs
 
 
-def detect(config: Configuration, feature_name: str, video_uri: str) -> tuple[bool, bool]:
+def detect(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> tuple[bool, bool]:
     """Detect Brand Mention (Speech) & Brand Mention (Speech) (First 5 seconds)
     Args:
         feature_name: the name of the feature
