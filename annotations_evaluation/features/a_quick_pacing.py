@@ -30,7 +30,7 @@ from configuration import Configuration
 
 def detect_quick_pacing(
     config: Configuration,
-    feature_name: str, video_uri: str
+    feature_name: str, video_uri: dict[str, str]
 ) -> dict:
     """Detect Quick Pacing
     Args:
