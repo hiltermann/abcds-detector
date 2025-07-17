@@ -61,7 +61,7 @@ def detect_supers(config: Configuration, feature_name: str, video_uri: dict[str,
     return supers
 
 
-def detect_supers_with_audio(config: Configuration, feature_name: str, video_uri: str) -> bool:
+def detect_supers_with_audio(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> bool:
     """Detect Supers with Audio
     Args:
         feature_name: the name of the feature
