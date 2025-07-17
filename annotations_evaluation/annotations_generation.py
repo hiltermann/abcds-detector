@@ -27,7 +27,7 @@ from google.cloud import videointelligence
 from google.cloud.videointelligence import VideoContext
 from google.cloud import videointelligence_v1 as videointelligence2
 from google.cloud.videointelligence_v1 import types
-from google.protobuf.json.format import MessageToDict
+from google.protobuf.json_format import MessageToDict
 from configuration import Configuration
 from helpers.generic_helpers import (
     get_blob,
