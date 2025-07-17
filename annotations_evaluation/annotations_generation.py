@@ -31,6 +31,7 @@ from configuration import Configuration
 from helpers.generic_helpers import (
     get_blob,
     execute_tasks_in_parallel,
+    convert_json_keys,
 )
 
 
@@ -65,7 +66,7 @@ def standard_annotations_detection(
     response = operation.result(timeout=800)
 
     # Convert the protobuf response object to a Python dictionary
-    json_string = types.AnnotateVideoResponse.to_json(response)
+    json_string = types.AnnotateVideoResponse.to_json(convert_json_keys(response))
 
     # Write the dictionary to a JSON file
     with open(local_path, 'w', encoding='utf-8') as f:
@@ -96,7 +97,7 @@ def custom_annotations_detection(
     response = operation.result(timeout=800)
 
     # Convert the protobuf response object to a Python dictionary
-    json_string = types.AnnotateVideoResponse.to_json(response)
+    json_string = types.AnnotateVideoResponse.to_json(convert_json_keys(response))
 
     # Write the dictionary to a JSON file
     with open(local_path, 'w') as f:
