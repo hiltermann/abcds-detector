@@ -74,7 +74,6 @@ def execute_abcd_assessment_for_videos(config: Configuration):
       "llm_params": llm_params.__dict__,
   }
 
-  df_output_sheet = pandas.DataFrame()
   for video_blob in config.video_blobs:
     print(f"\n\nProcessing ABCD Assessment for video {video_blob['filename']}... \n")
 
@@ -101,28 +100,24 @@ def execute_abcd_assessment_for_videos(config: Configuration):
         
     if config.output_sheet and config.spreadsheet_id:
       if config.use_annotations:      
-        df = pandas.DataFrame(video_assessment["annotations_evaluation"]["evaluated_features"])
-        df.insert(0, 'Type', "Annotations")
-      if config.use_llms:      
-        df = pandas.DataFrame(video_assessment["llms_evaluation"]["evaluated_features"])
-        df.insert(0, 'Type', "Llms")
+        assessment_df = pandas.DataFrame(video_assessment["annotations_evaluation"]["evaluated_features"])
+        assessment_df.insert(0, 'Type', "Annotations")
 
       filename = video_blob["filename"]
 
-      df.insert(0, 'DriveUrl', video_blob["video_url"])
-      df.insert(0, 'Filename', filename)
-      df.insert(0, 'VideoUrl', "")
-      df.insert(0, 'AnalysisDate', datetime.datetime.now())
-      df_output_sheet = pandas.concat([df,df_output_sheet])
+      assessment_df.insert(0, 'DriveUrl', video_blob["video_url"])
+      assessment_df.insert(0, 'Filename', filename)
+      assessment_df.insert(0, 'VideoUrl', "")
+      assessment_df.insert(0, 'AnalysisDate', datetime.datetime.now())
 
     # Remove local version of video files
     remove_local_video_files()
 
-  if config.output_sheet and config.spreadsheet_id:
-    sheet = sheets.InteractiveSheet(sheet_id=config.spreadsheet_id, worksheet_name=config.output_sheet)
-    df_sheet = sheet.as_df()
-    df_output_sheet = pandas.concat([df_sheet,df_output_sheet])
-    sheet.update(df_output_sheet)
+    if config.output_sheet and config.spreadsheet_id:
+      sheet = sheets.InteractiveSheet(sheet_id=config.spreadsheet_id, worksheet_name=config.output_sheet)
+      sheet_df = sheet.as_df()
+      df_output_sheet = pandas.concat([sheet_df,assessment_df])
+      updated_sheet = sheet.update(df_output_sheet)
 
   if config.assessment_file:
     with open(config.assessment_file, "w", encoding="utf-8") as f:
