@@ -31,7 +31,6 @@ from google.cloud.videointelligence_v1 import types
 from google.protobuf.json_format import MessageToDict
 from configuration import Configuration
 from helpers.generic_helpers import (
-    get_blob,
     execute_tasks_in_parallel,
 )
 
@@ -73,7 +72,6 @@ def standard_annotations_detection(
         always_print_fields_with_no_presence=True,  # optional: include default values if needed
         use_integers_for_enums=True
     )
-    # dict_data = convert_durations_in_dict(dict_data)
 
     if not os.path.exists(video_path):
       os.makedirs(video_path)
@@ -112,7 +110,6 @@ def custom_annotations_detection(
         always_print_fields_with_no_presence=True,  # optional: include default values if needed
         use_integers_for_enums=True
     )
-    # dict_data = convert_durations_in_dict(dict_data)
 
     if not os.path.exists(video_path):
       os.makedirs(video_path)
