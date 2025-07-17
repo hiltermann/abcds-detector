@@ -30,7 +30,7 @@ from helpers.generic_helpers import get_knowledge_graph_entities
 from configuration import Configuration
 
 
-def detect_product_visuals(config: Configuration, feature_name: str, video_uri: str) -> bool:
+def detect_product_visuals(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> bool:
     """Detect Product Visuals
     Args:
         feature_name: the name of the feature
@@ -45,7 +45,7 @@ def detect_product_visuals(config: Configuration, feature_name: str, video_uri: 
     return product_visuals
 
 
-def detect_product_visuals_1st_5_secs(config: Configuration, feature_name: str, video_uri: str) -> bool:
+def detect_product_visuals_1st_5_secs(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> bool:
     """Detect Product Visuals (First 5 seconds)
     Args:
         feature_name: the name of the feature
