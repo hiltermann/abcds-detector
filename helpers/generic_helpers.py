@@ -68,9 +68,9 @@ def expand_uris(uris: list) -> any:
             yield uri
 
 
-def get_annotation_uri(config: Configuration, video_uri: str) -> str:
+def get_annotation_uri(config: Configuration, video_uri: dict[str, str]) -> str:
     """Helper to translate video to annotation uri."""
-    return config.local_path + "/"
+    return video_uri["filename"] + "/" + config.local_path + "/"
 
 
 def get_reduced_uri(config: Configuration, video_uri: str) -> str:
