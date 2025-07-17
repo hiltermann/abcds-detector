@@ -29,7 +29,7 @@ from helpers.generic_helpers import load_blob, get_annotation_uri
 from configuration import Configuration
 
 
-def detect_audio_speech_early_1st_5_secs(config: Configuration, feature_name: str, video_uri: str) -> bool:
+def detect_audio_speech_early_1st_5_secs(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> bool:
     """Detect Audio Early (First 5 seconds)
     Args:
         config: all the parameters
