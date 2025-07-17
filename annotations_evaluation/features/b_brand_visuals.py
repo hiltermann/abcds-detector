@@ -44,7 +44,7 @@ def calculate_surface_area(points) -> float:
     return surface_area * 100
 
 
-def detect_brand_visuals(config: Configuration, feature_name: str, video_uri: str) -> bool:
+def detect_brand_visuals(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> bool:
     """Detect Brand Visuals
     Args:
         config: all the parameters
@@ -60,7 +60,7 @@ def detect_brand_visuals(config: Configuration, feature_name: str, video_uri: st
     return brand_visuals
 
 
-def detect_brand_visuals_1st_5_secs(config: Configuration, feature_name: str, video_uri: str) -> bool:
+def detect_brand_visuals_1st_5_secs(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> bool:
     """Detect Brand Visuals (First 5 seconds)
     Args:
         config: all the parameters
@@ -77,7 +77,7 @@ def detect_brand_visuals_1st_5_secs(config: Configuration, feature_name: str, vi
     return brand_visuals_1st_5_secs
 
 
-def detect(config: Configuration, feature_name: str, video_uri: str) -> tuple[bool, bool]:
+def detect(config: Configuration, feature_name: str, video_uri: dict[str, str]) -> tuple[bool, bool]:
     """Detect Brand Visuals & Brand Visuals (First 5 seconds)
     Args:
         config: all the parameters
