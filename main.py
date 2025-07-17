@@ -29,6 +29,7 @@ import datetime
 from google.colab import sheets
 from feature_configs.features import get_feature_configs
 import pandas
+from helpers.drive_service import download_spreadsheet_data
 from helpers.generic_helpers import (
     print_abcd_assessment,
     remove_local_video_files
@@ -39,6 +40,9 @@ from utils import parse_args, build_abcd_params_config
 
 def execute_abcd_assessment_for_videos(config: Configuration):
   """Execute ABCD Assessment for all brand videos in GCS"""
+
+  # @title Retrieve input files from sheet / drive and Set config.set_videos()
+  config.video_blobs = download_spreadsheet_data(config)
 
   for video_blob in config.video_blobs:
     print(f"\n\nProcessing ABCD Assessment for video {video_blob['filename']}... \n")
