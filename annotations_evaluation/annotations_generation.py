@@ -102,7 +102,8 @@ def custom_annotations_detection(
     )
     print(f"\nProcessing video for {str(features)} annotations...")
     response = operation.result(timeout=800)
-    
+    print(f"\nOperations: {str(operation)}")
+    print(f"\nResponse: {str(response)}")
     dict_data = MessageToDict(
         response._pb,
         preserving_proto_field_name=True,
