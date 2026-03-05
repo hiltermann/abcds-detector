@@ -104,7 +104,7 @@ def custom_annotations_detection(
     print(f"\nProcessing video for {str(features)} annotations...")
     response = operation.result(timeout=800)
     print(f"\nOperation: {str(operation)}")
-    print(f"\nresponse: {str(response)}")
+    # print(f"\nresponse: {str(response)}")
     
     dict_data = MessageToDict(
         response._pb,
@@ -179,16 +179,16 @@ def generate_video_annotations(config: Configuration, video_blob: dict[str, str]
             standard_video_client, video_blob['blob'], standard_annotations_path, video_path
         ),
     )
-    tasks.append(
-        lambda: custom_annotations_detection(
-            standard_video_client,
-            face_context,
-            [videointelligence.Feature.FACE_DETECTION],
-            video_blob['blob'],
-            face_annotations_path,
-            video_path
-        )
-    )
+    # tasks.append(
+    #     lambda: custom_annotations_detection(
+    #         standard_video_client,
+    #         face_context,
+    #         [videointelligence.Feature.FACE_DETECTION],
+    #         video_blob['blob'],
+    #         face_annotations_path,
+    #         video_path
+    #     )
+    # )
     tasks.append(
         lambda: custom_annotations_detection(
             custom_video_client,
@@ -199,16 +199,16 @@ def generate_video_annotations(config: Configuration, video_blob: dict[str, str]
             video_path
         )
     )
-    tasks.append(
-        lambda: custom_annotations_detection(
-            standard_video_client,
-            speech_context,
-            [videointelligence.Feature.SPEECH_TRANSCRIPTION],
-            video_blob['blob'],
-            speech_annotations_path,
-            video_path
-        )
-    )
+    # tasks.append(
+    #     lambda: custom_annotations_detection(
+    #         standard_video_client,
+    #         speech_context,
+    #         [videointelligence.Feature.SPEECH_TRANSCRIPTION],
+    #         video_blob['blob'],
+    #         speech_annotations_path,
+    #         video_path
+    #     )
+    # )
 
     # Execute annotations generation tasks only for the ones that haven't been processed.
     execute_tasks_in_parallel(tasks)
