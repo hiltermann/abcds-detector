@@ -97,7 +97,8 @@ def custom_annotations_detection(
     operation = video_client.annotate_video(
         request={
             "features": features,
-            "input_content": video_blob,
+            # "input_content": video_blob,
+            "input_uri": "gs://giorgos-4-abcd/bkng/-CwPMSVqwZw.mp4",
             "video_context": context
         }
     )
