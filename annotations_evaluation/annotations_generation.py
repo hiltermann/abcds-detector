@@ -26,7 +26,6 @@ import os
 from enum import Enum
 from google.cloud import videointelligence
 from google.cloud.videointelligence import VideoContext
-from google.cloud import videointelligence_v1 as videointelligence2
 from google.cloud.videointelligence_v1 import types
 from google.protobuf.json_format import MessageToDict
 from configuration import Configuration
@@ -127,7 +126,6 @@ def generate_video_annotations(config: Configuration, video_blob: dict[str, str]
     """Generates video annotations for videos in Google Cloud Storage"""
 
     standard_video_client = videointelligence.VideoIntelligenceServiceClient()
-    custom_video_client = videointelligence2.VideoIntelligenceServiceClient()
 
     # Face Detection
     face_config = videointelligence.FaceDetectionConfig(
@@ -136,12 +134,12 @@ def generate_video_annotations(config: Configuration, video_blob: dict[str, str]
     face_context = videointelligence.VideoContext(face_detection_config=face_config)
 
     # People Detection
-    person_config = videointelligence2.types.PersonDetectionConfig(
+    person_config = videointelligence.types.PersonDetectionConfig(
         include_bounding_boxes=True,
         include_attributes=True,
         include_pose_landmarks=True,
     )
-    person_context = videointelligence2.types.VideoContext(
+    person_context = videointelligence.types.VideoContext(
         person_detection_config=person_config
     )
 
@@ -189,9 +187,9 @@ def generate_video_annotations(config: Configuration, video_blob: dict[str, str]
     )
     tasks.append(
         lambda: custom_annotations_detection(
-            custom_video_client,
+            standard_video_client,
             person_context,
-            [videointelligence2.Feature.PERSON_DETECTION],
+            [videointelligence.Feature.PERSON_DETECTION],
             video_blob['blob'],
             people_annotations_path,
             video_path
