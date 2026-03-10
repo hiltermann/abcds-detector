@@ -75,6 +75,7 @@ class Configuration:
         input_sheet: str,
         output_sheet: str,
         use_annotations: bool,
+        use_llms: bool,
         local_path: str
     ) -> None:
         """Set the required parameters for ABCD to run.
@@ -88,6 +89,7 @@ class Configuration:
           input_sheet: Input sheet name.
           output_sheet: Output sheet name.
           use_annotations: Use video annotation AI.
+          use_llms: Use video LLMS AI.
           local_path: Local path in colab to store annotation files.
         """
         self.project_id = project_id
@@ -96,6 +98,7 @@ class Configuration:
         self.input_sheet = input_sheet
         self.output_sheet = output_sheet
         self.use_annotations = use_annotations
+        self.use_llms = use_llms
         self.local_path = local_path
 
     def set_brand_details(self,
