@@ -47,6 +47,7 @@ class Configuration:
         self.input_sheet = ""
         self.output_sheet = ""
         self.use_annotations = True
+        self.use_llms = True
 
         # set videos
         self.video_blobs = []
