@@ -60,6 +60,24 @@ def execute_abcd_assessment_for_videos(config: Configuration):
       video_assessment["annotations_evaluation"] = {
           "evaluated_features": annotations_evaluated_features,
       }
+    if config.use_llms:
+      llm_evaluated_features = evaluate_abcd_features_using_llms(
+        config, video_uri, prompt_params, llm_params
+      )
+      video_assessment["llms_evaluation"] = {
+        "evaluated_features": llm_evaluated_features,
+      }
+
+      if config.verbose:
+        if len(llm_evaluated_features) < len(get_feature_configs()):
+          print(
+            f"WARNING: ABCD Detector was not able to process all the features for video {video_uri}. Please check and execute again. \n"
+          )
+        if len(llm_evaluated_features) > len(get_feature_configs()):
+          print(
+            f"WARNING: ABCD Detector processed more features than the original number features. \
+            Processed features: {len(llm_evaluated_features)} - Original features: {len(get_feature_configs())}"
+          )
 
     print_abcd_assessment(config.brand_name, video_assessment)
         
